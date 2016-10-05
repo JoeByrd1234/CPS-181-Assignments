@@ -1,0 +1,31 @@
+
+public class Stack {
+	private String storage[] = new String[50];
+	private int count = -1;
+	
+	public void push(String a){
+		count++;
+		storage[count] = a;
+	}
+	
+	public String pop(){
+		String retval = storage[count];
+		count--;
+		return retval;
+	}
+	public String top(){
+		return (storage[count]);
+	}
+	
+	public boolean isFull(){
+		if (count == 49)
+			return true;
+		return false;
+	}
+	
+	public boolean isEmpty(){
+		if (count == -1)
+			return true;
+		return false;
+	}
+}

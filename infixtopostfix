@@ -1,0 +1,89 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class MainClass {
+
+	public static void main(String[] args) {
+		Scanner scan = new Scanner(System.in);
+		String output[] = new String[50];
+		int outCount = -1;
+		//The stack class I made, stores the operators
+		Stack operators = new Stack();
+		//A map will allow me to test priorities easily. Please let me have this one dynamic storage thing.
+		Map<String, Integer> priority = new HashMap<String, Integer>();
+		priority.put("+", 1);
+		priority.put("-", 1);
+		priority.put("*", 2);
+		priority.put("x", 2);
+		priority.put("/", 2);
+		priority.put("^", 4);
+		priority.put("(", 0);
+		priority.put(")", 9);
+		
+		//Was having issues parsing input, decided to do it like this
+		String rawInput = scan.nextLine();
+		String input[] = rawInput.split("[ ]+");
+		
+		//for every item in the input
+		for (int i = 0; i < input.length; i++) {
+			//if it is an operand
+			if (priority.containsKey(input[i])) {
+				String op = input[i];
+				//if there's something in the operand stack
+				if (!operators.isEmpty()){
+					int stackedVal, opVal;
+					//Find priorities of the new item, and the top item in the stack
+					stackedVal = priority.get(operators.top());
+					opVal = priority.get(op);
+					
+					//if the item is an end parenthesis
+					//Idk why "if input[i] == ")" wouldn't work. I had to do it like this.
+					if (opVal == 9){
+						//handle everything inside the parenthesis
+						while (priority.get(operators.top()) != 0){
+							outCount++;
+							output[outCount] = operators.pop();
+						}
+						//remove beginning parenthesis
+						operators.pop();
+					}
+					
+					//if item was a beginning parenthesis, or greater than the top item, add to stack
+					else if (opVal > stackedVal || opVal == 0){
+						operators.push(op);
+					}
+					
+					//if the item was less than, do a little switcheroo and put the old one on the output
+					else if (opVal <= stackedVal){
+						outCount++;
+						output[outCount] = operators.pop();
+						operators.push(op);
+					}
+					
+					
+				}
+				// if there wasnt anything in the operand stack, just add the operand to it
+				else operators.push(op);
+				
+				
+			} 
+			//if it wasn't an operand
+			else {
+				outCount++;
+				output[outCount] = input[i];
+			}
+
+		}
+		//if there are any operands left, print em
+		while(!operators.isEmpty()){
+			outCount++;
+			output[outCount] = operators.pop();
+		}
+		
+		//output final answer
+		for (int i = 0; i <= outCount; i++){
+			System.out.print(output[i] + " ");
+		}
+	}
+}
